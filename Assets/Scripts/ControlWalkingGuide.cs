@@ -3,11 +3,6 @@ using DG.Tweening;
 
 public class controlWalkingGuide : MonoBehaviour
 {
-    /// <summary>
-    /// SIMPLIFIED VERSION FOR STANDING EXPERIMENT
-    /// This script keeps the walking guide centered as a fixation point.
-    /// All movement functionality has been removed.
-    /// </summary>
 
     runExperiment runExperiment;
     experimentParameters expParams;
