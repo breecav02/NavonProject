@@ -18,7 +18,7 @@ public class targetAppearance : MonoBehaviour
     GameObject scriptHolder;
 
     private Color targColor;
-    bool includeForwardMask = true;  // ENABLED: Show hash mask BEFORE stimuli (300ms)
+    bool includeBackwardMask = true;
 
     private void Start()
     {
@@ -87,14 +87,6 @@ public class targetAppearance : MonoBehaviour
 
                 yield return new WaitForSecondsRealtime(waitTime);
 
-                // FORWARD MASK: Show mask BEFORE stimulus for 300ms
-                if (includeForwardMask)
-                {
-                    makeNavonStimulus.backwardMask();  // Shows the hash grid
-                    yield return new WaitForSecondsRealtime(0.3f);  // 300ms mask
-                    makeNavonStimulus.hideNavon();  // Back to fixation
-                }
-
                 // Generate stimulus - task is already set in runExperiment
                 makeNavonStimulus.GenerateNavon();
                 makeNavonStimulus.showNavon();
@@ -129,7 +121,15 @@ public class targetAppearance : MonoBehaviour
                 makeNavonStimulus.hideNavon();
                 runExperiment.targState = 0;
 
-                // Wait for response window (no mask after stimulus)
+                // BACKWARD MASK: Show mask AFTER stimulus for 30ms
+                if (includeBackwardMask)
+                {
+                    makeNavonStimulus.backwardMask();  // Shows the hash grid
+                    yield return new WaitForSecondsRealtime(0.03f);  // 30ms mask
+                    makeNavonStimulus.hideNavon();  // Back to fixation
+                }
+
+                // Wait for response window
                 yield return new WaitForSecondsRealtime(expParams.responseWindow);
 
                 // Handle no response - ALWAYS INCORRECT
@@ -149,7 +149,7 @@ public class targetAppearance : MonoBehaviour
                     
                     runExperiment.RecordData.extractEventSummary();
                     
-                    // ✅ UPDATE STAIRCASE - no response treated as incorrect
+                    // UPDATE STAIRCASE - no response treated as incorrect
                     if (runExperiment.durationStaircase != null)
                     {
                         float nextDuration = runExperiment.durationStaircase.ProcessResponse(false);  // Always false
